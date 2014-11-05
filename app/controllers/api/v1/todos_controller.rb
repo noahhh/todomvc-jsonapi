@@ -1,14 +1,18 @@
 class Api::V1::TodosController < ApplicationController
-
 	def index
 		@todo = Todo.all
+
 		render json: @todo
 	end
 
 	def create
 		@todo = Todo.new(todo_params)
-		@todo.save
-		render json: @todo, status: :created
+
+		if @todo.save
+			render json: @todo, status: :created
+		else
+			render @todo.errors, status: :unprocessible_entity
+		end
 	end
 
 	def update
@@ -24,8 +28,6 @@ class Api::V1::TodosController < ApplicationController
 	def destroy
 		@todo =	Todo.find_by(params[:id])
 		@todo.destroy
-
-		head :no_content
 	end
 
 	private
